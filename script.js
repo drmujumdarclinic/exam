@@ -12,7 +12,7 @@ let startTime;
 let speechRecognition;
 const questionsData = [];
 
-document.getElementById("exam-form").addEventListener("submit", function (e) {
+document.getElementById("examForm").addEventListener("submit", function (e) {
   e.preventDefault(); // 🔴 Prevent page reload
 
   const examName = document.getElementById("exam-name").value;
