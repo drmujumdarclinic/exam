@@ -12,6 +12,17 @@ let startTime;
 let speechRecognition;
 const questionsData = [];
 
+document.getElementById("exam-form").addEventListener("submit", function (e) {
+  e.preventDefault(); // 🔴 Prevent page reload
+
+  const examName = document.getElementById("exam-name").value;
+  const totalQuestions = parseInt(document.getElementById("question-count").value);
+  const timePerQuestion = parseInt(document.getElementById("time-per-question").value);
+
+  // 🔁 Redirect to exam page with query parameters
+  window.location.href = `exam.html?exam=${encodeURIComponent(examName)}&count=${totalQuestions}&time=${timePerQuestion}`;
+});
+
 function startExam() {
   const name = document.getElementById('exam-name').value.trim();
   totalQuestions = parseInt(document.getElementById('total-questions').value);
