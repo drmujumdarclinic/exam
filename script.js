@@ -1,4 +1,5 @@
 // script.js
+console.log("✅ Connected script.js");
 
 let currentQuestion = 0;
 let totalQuestions = 0;
