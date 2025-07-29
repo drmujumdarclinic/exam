@@ -1,107 +1,35 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>NEET Practice Timer</title>
+  <title>Start New Exam</title>
   <style>
-    body { font-family: Arial; padding: 20px; text-align: center; }
-    .big { font-size: 48px; margin: 20px; }
-    #controls { margin-top: 20px; }
+    body { font-family: sans-serif; background: #e0f7fa; padding: 20px; }
+    .box { background: white; padding: 30px; border-radius: 10px; max-width: 400px; margin: auto; box-shadow: 0 0 10px #ccc; }
+    input, button { margin-top: 10px; width: 100%; padding: 10px; }
   </style>
 </head>
 <body>
-  <h1>NEET Practice App</h1>
-
-  <label>Number of Questions: <input type="number" id="numQuestions" value="150"></label><br><br>
-  <label>Total Time (min): <input type="number" id="totalTime" value="150"></label><br><br>
-  <button onclick="startPractice()">Start Practice</button>
-
-  <div id="session" style="display:none;">
-    <div class="big" id="questionDisplay">Q1</div>
-    <div class="big" id="timer">1:00</div>
-    <div id="controls">
-      <button onclick="nextQuestion()">Next</button>
-    </div>
+  <div class="box">
+    <h2>📝 New Exam Setup</h2>
+    <input type="text" id="examName" placeholder="Exam Name" required>
+    <input type="number" id="numQuestions" placeholder="Total Questions (e.g. 150)" required>
+    <input type="number" id="totalTime" placeholder="Total Time (minutes)" required>
+    <button onclick="startExam()">Start Exam</button>
   </div>
 
-  <audio id="beep" src="https://www.soundjay.com/button/beep-07.wav" preload="auto"></audio>
-
   <script>
-    let totalQuestions = 0, totalTime = 0, currentQuestion = 0;
-    let perQuestionTime = 0, startTime, timerInterval;
-    let sessionId = Date.now();
-    const backendURL = "https://script.google.com/macros/s/AKfycbzUpG7lu83vQY2EoLY2m6cOrPqBwW3IED_H5rcPg_cahaOBZlIt4sp--JCwzIROd55V/exec"; // replace with Apps Script URL
+    function startExam() {
+      const name = document.getElementById('examName').value;
+      const q = document.getElementById('numQuestions').value;
+      const t = document.getElementById('totalTime').value;
+      if (!name || !q || !t) return alert("Fill all fields");
 
-    function startPractice() {
-      totalQuestions = parseInt(document.getElementById("numQuestions").value);
-      totalTime = parseInt(document.getElementById("totalTime").value);
-      perQuestionTime = Math.floor((totalTime * 60) / totalQuestions);
-
-      document.getElementById("session").style.display = "block";
-      currentQuestion = 0;
-      nextQuestion();
+      localStorage.setItem("examName", name);
+      localStorage.setItem("numQuestions", q);
+      localStorage.setItem("totalTime", t);
+      window.location.href = "exam.html";
     }
-
-    function nextQuestion() {
-      if (currentQuestion > 0) {
-        const timeTaken = Math.floor((Date.now() - startTime) / 1000);
-        sendData(currentQuestion, perQuestionTime, timeTaken);
-      }
-
-      if (currentQuestion >= totalQuestions) {
-        alert("Practice Completed!");
-        clearInterval(timerInterval);
-        return;
-      }
-
-      currentQuestion++;
-      document.getElementById("questionDisplay").textContent = "Q" + currentQuestion;
-      startTime = Date.now();
-      startTimer(perQuestionTime);
-    }
-
-    function startTimer(duration) {
-      let timer = duration;
-      clearInterval(timerInterval);
-      timerInterval = setInterval(() => {
-        let minutes = Math.floor(timer / 60);
-        let seconds = timer % 60;
-        document.getElementById("timer").textContent =
-          `${minutes}:${seconds.toString().padStart(2, '0')}`;
-
-        if (--timer < 0) {
-          document.getElementById("beep").play();
-          clearInterval(timerInterval);
-        }
-      }, 1000);
-    }
-
-    function sendData(questionNo, timeAllotted, timeTaken) {
-      fetch(backendURL, {
-        method: "POST",
-        body: JSON.stringify({
-          sessionId,
-          questionNo,
-          timeAllotted,
-          timeTaken
-        }),
-        headers: {
-          "Content-Type": "application/json"
-        }
-      });
-    }
-
-    // 🎤 Voice input
-    window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    const recognition = new SpeechRecognition();
-    recognition.continuous = true;
-    recognition.start();
-
-    recognition.onresult = function (event) {
-      const transcript = event.results[event.results.length - 1][0].transcript.trim().toLowerCase();
-      if (transcript.includes("next")) {
-        nextQuestion();
-      }
-    };
   </script>
 </body>
 </html>
+
