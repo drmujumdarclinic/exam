@@ -11,6 +11,11 @@ let timeRemaining;
 let sessionId = Date.now();
 let questionStartTime;
 const results = [];
+for (let i = 1; i <= totalQuestions; i++) {
+  let timeSpent = responseTimes[i] || 0;
+  labels.push("Q" + i);
+  dataPoints.push(timeSpent);
+}
 
 const examTitle = document.getElementById("exam-title");
 const questionNumber = document.getElementById("question-number");
